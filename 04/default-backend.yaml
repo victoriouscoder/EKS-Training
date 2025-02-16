@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: default-backend
+  name: default-backend
+spec:
+  selector:
+    matchLabels:
+      run: default-backend
+  template:
+    metadata:
+      labels:
+        run: default-backend
+    spec:
+      containers:
+      - image: gcr.io/kuar-demo/kuard-amd64:1
+        name: default-backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: default-backend
+  name: default-backend
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    run: default-backend
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: default-backend
+spec:
+  ingressClassName: nginx
+  defaultBackend:
+    service:
+      name: default-backend
+      port: 
+        number: 80
